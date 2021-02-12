@@ -4,6 +4,8 @@ version: "0.1.0"
 synopsis: "A library for loading and emitting Bril programs."
 maintainer: ["Finley McIlwaine"]
 authors: ["Finley McIlwaine" "CS6120 @ Cornell"]
+homepage: "https://github.com/FinleyMcIlwaine/bril-ocaml"
+bug-reports: "https://github.com/FinleyMcIlwaine/bril-ocaml/issues"
 depends: [
   "dune" {>= "2.8"}
   "yojson" {>= "1.7.0"}
@@ -24,3 +26,4 @@ build: [
     "@doc" {with-doc}
   ]
 ]
+dev-repo: "git+https://github.com/FinleyMcIlwaine/bril-ocaml.git"
