@@ -11,7 +11,7 @@
 
 (package
  (name bril)
- (synopsis "A library for loading and emitting Bril programs.")
+ (synopsis "A library for loading and emitting Bril programs")
  (depends
   (yojson (>= 1.7.0))
   (core (>= v0.14.1))))
