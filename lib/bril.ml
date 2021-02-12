@@ -1,9 +1,10 @@
 open Core
-open Const
-open Dest
-open Func
-open Instr
-open Op
+module Bril_type = Bril_type
+module Const = Const
+module Dest = Dest
+module Func = Func
+module Instr = Instr
+module Op = Op
 
 type t = Func.t list [@@deriving compare, equal, sexp_of]
 
