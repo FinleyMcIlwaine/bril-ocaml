@@ -1,4 +1,9 @@
 open Core
+open Const
+open Dest
+open Func
+open Instr
+open Op
 
 type t = Func.t list [@@deriving compare, equal, sexp_of]
 
