@@ -45,4 +45,4 @@ let to_string {name; args; ret_type; instrs; } =
     ) (Instr.to_string instr)
   ) |> String.concat ~sep:"\n"
   in
-  sprintf "%s\n%s" header body
+  sprintf "%s\n%s\n}" header body
