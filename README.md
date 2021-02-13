@@ -18,7 +18,7 @@ data structure, and that's it.
 
 You can pin this library with opam:
 ```
-opam pin add bril https://github.com/FinleyMcIlwaine/bril-ocaml
+opam pin add bril https://github.com/FinleyMcIlwaine/bril-ocaml.git
 ```
 
 Then include it in your Dune files as `bril` and use it just as you would
