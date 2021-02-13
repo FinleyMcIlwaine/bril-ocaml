@@ -81,3 +81,51 @@ let of_json json =
     | op -> failwithf "invalid op: %s" op ())
   | json -> failwithf "invalid label: %s" (to_string json) ()
 ;;
+
+let to_json =
+  let dest_to_json (name, bril_type) =
+    [ ("dest", `String name); ("type", Bril_type.to_json bril_type) ]
+  in
+  function
+  | Label l -> `Assoc [ ("label", `String l) ]
+  | Const (dest, const) -> `Assoc ([
+    ("op", `String "const");
+    ("value", match const with
+      | Int i -> `Int i
+      | Bool b -> `Bool b);
+  ] @ dest_to_json dest)
+  | Binary (dest, op, arg1, arg2) -> `Assoc ([
+    ("op", `String (Op.Binary.to_string op));
+    ("args", `List [ `String arg1; `String arg2]) ] @ dest_to_json dest)
+  | Unary (dest, op, arg1) -> `Assoc ([
+    ("op", `String (Op.Unary.to_string op));
+    ("args", `List [ `String arg1; ]) ] @ dest_to_json dest)
+  | Jmp label ->  `Assoc [ ("op", `String "jmp"); ("labels", `List [`String label])]
+  | Br (arg, l1, l2) ->
+    `Assoc
+    [
+      ("op", `String "br");
+      ("args", `List [`String arg]);
+      ("labels", `List [`String l1; `String l2]);
+    ]
+  | Call (dest, func_name, args) ->
+    `Assoc
+    ( [
+      ("op", `String "call");
+      ("funcs", `List [`String func_name]);
+      ("args", `List (List.map args ~f:(fun a -> `String a)));
+    ] @ Option.value_map dest ~default:[] ~f:dest_to_json )
+  | Ret arg ->
+    `Assoc
+      [
+        ("op", `String "ret");
+        ("args", Option.value_map arg ~default:`Null ~f:(fun a -> `List [`String a]));
+      ]
+  | Print args ->
+    `Assoc 
+      [ 
+        ("op", `String "print");
+        ("args", `List (List.map args ~f:(fun a -> `String a)));
+      ]
+  | Nop -> `Assoc [("op", `String "nop")]
+  
