@@ -6,11 +6,12 @@ type t =
   | PtrType of t
 [@@deriving compare, equal, sexp_of]
 
-let of_json =
+let rec of_json =
   let open Yojson.Basic.Util in
   function
   | `String "int" -> IntType
   | `String "bool" -> BoolType
+  | `Assoc [ ("ptr", t ) ] -> PtrType (of_json t)
   | json -> failwithf "invalid type: %s" (to_string json) ()
 ;;
 
