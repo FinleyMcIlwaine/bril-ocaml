@@ -19,6 +19,7 @@ type t =
   | Free of arg
   | Store of arg * arg
   | Load of Dest.t * arg
+  | PtrAdd of Dest.t * arg * arg
 [@@deriving compare, equal, sexp_of]
 
 let to_string =
@@ -48,6 +49,7 @@ let to_string =
   | Free arg -> sprintf "free %s" arg
   | Store (ptr, v) -> sprintf "store %s %s" ptr v
   | Load (dest, arg) -> sprintf "%s load %s" (dest_to_string dest) arg
+  | PtrAdd (dest, arg1, arg2) -> sprintf "%s ptradd %s %s" (dest_to_string dest) arg1 arg2
 ;;
 
 let of_json json =
@@ -91,6 +93,7 @@ let of_json json =
     | "free" -> Free (arg 0)
     | "store" -> Store (arg 0, arg 1)
     | "load" -> Load (dest (), arg 0)
+    | "ptradd" -> PtrAdd (dest (), arg 0, arg 1)
     | op -> failwithf "invalid op: %s" op ())
   | json -> failwithf "invalid label: %s" (to_string json) ()
 ;;
@@ -150,4 +153,8 @@ let to_json =
     `Assoc [ "op", `String "store"; "args", `List [ `String arg1; `String arg2 ] ]
   | Load (dest, arg) ->
     `Assoc ([ "op", `String "load"; "args", `List [ `String arg ] ] @ dest_to_json dest)
+  | PtrAdd (dest, arg1, arg2) ->
+    `Assoc
+      ([ "op", `String "ptradd"; "args", `List [ `String arg1; `String arg2 ] ]
+      @ dest_to_json dest)
 ;;
