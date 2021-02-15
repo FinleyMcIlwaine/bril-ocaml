@@ -3,6 +3,7 @@ open Core
 type t =
   | IntType
   | BoolType
+  | PtrType of t
 [@@deriving compare, equal, sexp_of]
 
 let of_json =
@@ -18,12 +19,14 @@ let of_json_opt = function
   | json -> Some (of_json json)
 ;;
 
-let to_json = function
+let rec to_json = function
   | IntType -> `String "int"
   | BoolType -> `String "bool"
+  | PtrType t -> `Assoc [ ("ptr", to_json t) ]
 ;;
 
-let to_string = function
+let rec to_string = function
   | IntType -> "int"
   | BoolType -> "bool"
+  | PtrType t -> sprintf "ptr<%s>" (to_string t)
 ;;

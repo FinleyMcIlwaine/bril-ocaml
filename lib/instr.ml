@@ -15,6 +15,7 @@ type t =
   | Ret of arg option
   | Print of arg list
   | Nop
+  | Alloc of Dest.t * arg
 [@@deriving compare, equal, sexp_of]
 
 let to_string =
@@ -40,6 +41,7 @@ let to_string =
   | Ret (Some a) -> sprintf "ret %s" a
   | Print args -> String.concat ~sep:" " ("print" :: args)
   | Nop -> "nop"
+  | Alloc (dest, arg) -> sprintf "%s alloc %s" (dest_to_string dest) arg
 ;;
 
 let of_json json =
@@ -64,6 +66,7 @@ let of_json json =
         match json |> member "type" |> Bril_type.of_json with
         | IntType -> Const.Int (json |> member "value" |> to_int)
         | BoolType -> Const.Bool (json |> member "value" |> to_bool)
+        | t -> failwithf "invalid operand to const: %s" (Bril_type.to_string t) ()
       in
       Const (dest (), const)
     | op when Op.Binary.is_op op -> Binary (dest (), Op.Binary.of_string op, arg 0, arg 1)
@@ -78,6 +81,7 @@ let of_json json =
     | "ret" -> Ret (if List.is_empty (args ()) then None else Some (arg 0))
     | "print" -> Print (args ())
     | "nop" -> Nop
+    | "alloc" -> Alloc (dest (), (arg 0))
     | op -> failwithf "invalid op: %s" op ())
   | json -> failwithf "invalid label: %s" (to_string json) ()
 ;;
@@ -128,4 +132,4 @@ let to_json =
         ("args", `List (List.map args ~f:(fun a -> `String a)));
       ]
   | Nop -> `Assoc [("op", `String "nop")]
-  
+  | Alloc (dest, arg) -> `Assoc ([ ("op", `String "alloc"); ("args", `List [`String arg] ) ] @ (dest_to_json dest))  
