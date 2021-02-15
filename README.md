@@ -18,11 +18,23 @@ data structure, and that's it.
 
 You can pin this library with opam:
 ```
-opam pin add bril https://github.com/FinleyMcIlwaine/bril-ocaml.git
+opam pin add bril git://github.com/FinleyMcIlwaine/bril-ocaml#core
 ```
 
-Then include it in your Dune files as `bril` and use it just as you would
-any other dependency!
+The command above will pin the `core` branch of this repo, which only has
+support for the "core" Bril language. If you would like to have types for
+the extensions mentioned in the official repository (memory, floating
+points, and speculative execution), you can run:
+
+```
+opam pin add bril git://github.com/FinleyMcIlwaine/bril-ocaml#extended
+```
+
+That command will pin the `extended` branch of this repo that has support
+for those features.
+
+Once you've pinned it, you can include it in your Dune files as `bril` and
+use it just as you would any other dependency!
 
 The main function is the `Bril.from_json` function, which loads a Bril
 program in its JSON representation into the AST provided by this library.
