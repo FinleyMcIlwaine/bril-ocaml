@@ -17,6 +17,7 @@ type t =
   | Nop
   | Alloc of Dest.t * arg
   | Free of arg
+  | Store of arg * arg
 [@@deriving compare, equal, sexp_of]
 
 let to_string =
@@ -44,6 +45,7 @@ let to_string =
   | Nop -> "nop"
   | Alloc (dest, arg) -> sprintf "%s alloc %s" (dest_to_string dest) arg
   | Free arg -> sprintf "free %s" arg
+  | Store (ptr, v) -> sprintf "store %s %s" ptr v
 ;;
 
 let of_json json =
@@ -85,6 +87,7 @@ let of_json json =
     | "nop" -> Nop
     | "alloc" -> Alloc (dest (), arg 0)
     | "free" -> Free (arg 0)
+    | "store" -> Store (arg 0, arg 1)
     | op -> failwithf "invalid op: %s" op ())
   | json -> failwithf "invalid label: %s" (to_string json) ()
 ;;
@@ -140,4 +143,6 @@ let to_json =
   | Alloc (dest, arg) ->
     `Assoc ([ "op", `String "alloc"; "args", `List [ `String arg ] ] @ dest_to_json dest)
   | Free arg -> `Assoc [ "op", `String "free"; "args", `List [ `String arg ] ]
+  | Store (arg1, arg2) ->
+    `Assoc [ "op", `String "store"; "args", `List [ `String arg1; `String arg2 ] ]
 ;;
