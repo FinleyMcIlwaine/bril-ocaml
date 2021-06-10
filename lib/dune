@@ -2,4 +2,5 @@
  (name bril)
  (public_name bril)
  (libraries core yojson)
- (preprocess (pps ppx_jane)))
+ (preprocess
+  (pps ppx_jane)))
