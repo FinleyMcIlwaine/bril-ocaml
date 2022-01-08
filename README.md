@@ -4,8 +4,7 @@ an educational IR used in Cornell's advanced compilers course CS6120.
 
 ## Why
 
-> The [Bril GitHub](https://github.com/sampsyo/bril) contains an OCaml
-library already, why did you make this one?
+> The [Bril GitHub](https://github.com/sampsyo/bril) contains an OCaml library already, why did you make this one?
 
 The existing OCaml library has "too many" features. When it loads up a Bril
 program, it constructs the basic blocks for you. Moreover, it implements a 
